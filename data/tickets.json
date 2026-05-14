@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1001,
+    "user": "Sarah Jenkins",
+    "issue": "VPN keeps disconnecting every 5 minutes",
+    "priority": "High",
+    "category": "Network",
+    "isVip": false,
+    "timestamp": "2026-05-14T08:30:00Z"
+  },
+  {
+    "id": 1002,
+    "user": "David Chen",
+    "issue": "Excel keeps freezing when opening large spreadsheets",
+    "priority": "Medium",
+    "category": "Software",
+    "isVip": false,
+    "timestamp": "2026-05-14T09:15:00Z"
+  },
+  {
+    "id": 1003,
+    "user": "Elena Rodriguez (CEO)",
+    "issue": "Cannot access the quarterly financial board deck - Permissions Error",
+    "priority": "Critical",
+    "category": "Access",
+    "isVip": true,
+    "timestamp": "2026-05-14T10:05:00Z"
+  },
+  {
+    "id": 1004,
+    "user": "Marcus Thorne",
+    "issue": "External monitor is flickering and showing green lines",
+    "priority": "Low",
+    "category": "Hardware",
+    "isVip": false,
+    "timestamp": "2026-05-14T11:20:00Z"
+  },
+  {
+    "id": 1005,
+    "user": "System Alert",
+    "issue": "Primary Storage Server reaching 95% capacity",
+    "priority": "Critical",
+    "category": "Infrastructure",
+    "isVip": false,
+    "timestamp": "2026-05-14T11:45:00Z"
+  }
+]

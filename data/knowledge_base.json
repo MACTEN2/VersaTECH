@@ -1,0 +1,20 @@
+[
+  {
+    "id": "KB-001",
+    "category": "Network",
+    "issue_keyword": "drive",
+    "solution": "1. Verify VPN connection. 2. Use 'net use' command to remap drive. 3. Check Active Directory permissions."
+  },
+  {
+    "id": "KB-002",
+    "category": "Hardware",
+    "issue_keyword": "laptop",
+    "solution": "1. Perform a hard reset (hold power for 30s). 2. Check for battery swelling. 3. Verify AC adapter voltage."
+  },
+  {
+    "id": "KB-003",
+    "category": "Software",
+    "issue_keyword": "update",
+    "solution": "1. Clear Windows Update cache. 2. Run 'sfc /scannow' in CMD. 3. Restart the Windows Update service."
+  }
+]
