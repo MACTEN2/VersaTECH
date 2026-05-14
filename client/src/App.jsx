@@ -7,21 +7,43 @@ function App() {
   const [resolutionSteps, setResolutionSteps] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [kbSuggestion, setKbSuggestion] = useState("");
 
   // 1. DATA ACQUISITION: Fetch from our Node.js Backend
-  useEffect(() => {
-    fetch('http://localhost:3001/api/tickets')
+// 1. THE INITIAL LOAD: Runs once when the app opens
+useEffect(() => {
+  fetch('http://localhost:3001/api/tickets')
+    .then(res => {
+      if (!res.ok) throw new Error("Backend unreachable");
+      return res.json();
+    })
+    .then(data => {
+      setTickets(data);
+      setLoading(false); // Make sure you have a const [loading, setLoading] = useState(true);
+    })
+    .catch(err => {
+      console.error("CRITICAL ERROR: Could not load ticket queue.", err);
+      setLoading(false);
+    });
+}, []); // Empty array means "Only run on startup"
+
+// 2. THE INTELLIGENCE ENGINE: Runs every time you click a ticket
+useEffect(() => {
+  if (activeTicket) {
+    // Reset suggestion to 'Loading...' so the user knows the "Brain" is thinking
+    setKbSuggestion("Analyzing issue keywords...");
+
+    fetch(`http://localhost:3001/api/kb?issue=${encodeURIComponent(activeTicket.issue)}`)
       .then(res => res.json())
       .then(data => {
-        setTickets(data);
-        setLoading(false);
+        setKbSuggestion(data.suggestion);
       })
       .catch(err => {
-        console.error("Backend not running? Run 'node index.js' in the root folder.", err);
-        setLoading(false);
+        setKbSuggestion("Error retrieving KB suggestion. Check backend connection.");
+        console.error("KB Fetch Error:", err);
       });
-  }, []);
-
+  }
+}, [activeTicket]); // Runs when activeTicket changes
   // 2. LOGIC: Resolve Ticket Protocol
   const handleResolve = () => {
     if (resolutionSteps.length < 20) {
@@ -153,14 +175,14 @@ function App() {
                 </div>
 
                 {/* KB SUGGESTION SECTION */}
-                <div className="p-6 bg-blue-50/40 border-b border-blue-50">
+              <div className="p-6 bg-blue-50/40 border-b border-blue-50">
                   <h3 className="text-xs font-black text-blue-700 uppercase tracking-widest mb-4 flex items-center gap-2">
                     <BookOpen size={16} /> Automated KB Suggestion
                   </h3>
                   <div className="bg-white border border-blue-100 p-5 rounded-lg shadow-sm border-l-4 border-l-blue-400">
                     <p className="text-slate-700 text-sm leading-relaxed">
-                      Based on historical logs, this issue typically involves <span className="font-bold text-blue-800">system re-authentication</span> or 
-                      checking <span className="font-bold text-blue-800">{activeTicket.category}</span> hardware protocols.
+                      {/* CHANGE THIS PART BELOW */}
+                      {kbSuggestion || `Analyzing keywords for ${activeTicket.category} protocols...`}
                     </p>
                   </div>
                 </div>

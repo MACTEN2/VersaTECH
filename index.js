@@ -5,6 +5,7 @@ const DB_PATH = './data/tickets.json';
 const KB_PATH = './data/knowledge_base.json';
 const STATS_PATH = './docs/stats.log';
 
+
 // --- HELPER FUNCTIONS (The "Tools") ---
 
 function readDB() {
@@ -104,8 +105,20 @@ app.get('/api/tickets', (req, res) => {
 
 // API Route: Get KB Suggestion
 app.get('/api/kb/:id', (req, res) => {
-    const suggestion = getKBSuggestion(parseInt(req.params.id));
-    res.json({ suggestion });
+   const getKBSuggestion = (ticketIssue) => {
+    try {
+        const kb = JSON.parse(fs.readFileSync('./data/knowledge_base.json', 'utf8'));
+        const issueLower = ticketIssue.toLowerCase();
+        
+        const match = kb.find(entry => 
+            entry.keywords.some(kw => issueLower.includes(kw))
+        );
+
+        return match ? match.solution : "No specific KB found. Standard diagnostic: Check connectivity and restart hardware.";
+    } catch (err) {
+        return "KB Engine Offline.";
+    }
+};
 });
 
 // API Route: Resolve Ticket
