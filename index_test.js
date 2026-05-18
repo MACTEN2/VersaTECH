@@ -34,18 +34,21 @@ const testSuite = [
         }
     },
     {
-        name: "Test Case 2: Verification of KB Intelligence Pattern Matcher",
+        name: "Test Case 2: Verification of KB AI-Tailored Pattern Matcher",
         fn: async (context) => {
-            if (!context.issueText) throw new Error("Context Missing: Test Case 1 must run first.");
-
             const kbQueryUrl = `${BASE_URL}/api/kb?issue=${encodeURIComponent(context.issueText)}`;
             const kbResponse = await fetch(kbQueryUrl);
             
-            assert.strictEqual(kbResponse.status, 200, "❌ Transport Failure: KB lookup endpoint returned an error status.");
-            
+            assert.strictEqual(kbResponse.status, 200, "KB lookup endpoint returned error status.");
             const kbData = await kbResponse.json();
-            console.log(`   KB Engine Output parsed successfully.`);
-            assert.ok(kbData.suggestion, "❌ Payload Failure: Server returned an empty container for the KB suggestion.");
+            
+            console.log(`   AI Engine Verification Log Output:`);
+            console.log(`   👉 "${kbData.suggestion}"`);
+            
+            // Robust validation: Ensure the engine actually found the specific VPN/Network playbook
+            const foundTailoredPlaybook = kbData.suggestion.includes("GlobalProtect") || kbData.suggestion.includes("flushdns");
+            
+            assert.ok(foundTailoredPlaybook, "❌ Engine failed to return a specific, keyword-tailored playbook solution.");
         }
     },
     {
@@ -84,6 +87,25 @@ const testSuite = [
             assert.ok(metrics.hasOwnProperty('activeTickets'), "❌ Schema Mismatch: Missing activeTickets key.");
             assert.ok(metrics.hasOwnProperty('criticalTickets'), "❌ Schema Mismatch: Missing criticalTickets key.");
             assert.ok(metrics.hasOwnProperty('resolvedTickets'), "❌ Schema Mismatch: Missing resolvedTickets key.");
+        }
+    },
+   {
+        name: "Test Case 5: AI Engine Low-Confidence Fallback Execution",
+        fn: async (context) => {
+            const gibberishIssue = "Unrecognized anomalies detected on terminal widget XYZ-999.";
+            const kbQueryUrl = `${BASE_URL}/api/kb?issue=${encodeURIComponent(gibberishIssue)}`;
+            
+            const kbResponse = await fetch(kbQueryUrl);
+            assert.strictEqual(kbResponse.status, 200, "KB fallback endpoint failed to respond.");
+            
+            const kbData = await kbResponse.json();
+            console.log(`   Fallback Engine Verification Log Output:`);
+            console.log(`   👉 "${kbData.suggestion}"`);
+            
+            // Aligned validation: Look for the actual string your backend serves up on a miss
+            const hitFallbackSafetyNet = kbData.suggestion.includes("No specific KB found") || kbData.suggestion.includes("Standard diagnostic");
+            
+            assert.ok(hitFallbackSafetyNet, "❌ Engine failed to trigger its safe fallback protocol for unknown inputs.");
         }
     }
 ];

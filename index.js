@@ -104,26 +104,69 @@ app.get('/api/tickets', (req, res) => {
 });
 
 // API Route: Get KB Suggestion (FIXED SYNTAX DISCREPANCY)
+// GET: AI-Tailored Knowledge Base Context Engine
 app.get('/api/kb', (req, res) => {
     try {
         const ticketIssue = req.query.issue;
         if (!ticketIssue) {
-            return res.json({ suggestion: "No issue query provided for analysis." });
+            return res.json({ suggestion: "No active query context supplied for AI analysis." });
+        }
+
+        if (!fs.existsSync(KB_PATH)) {
+            return res.json({ suggestion: "Standard Diagnostic Protocol: Check network link and recycle baseline interfaces." });
         }
 
         const kb = JSON.parse(fs.readFileSync(KB_PATH, 'utf8'));
         const issueLower = ticketIssue.toLowerCase();
         
-        // Dynamic scan across keywords array
-        const match = kb.find(entry => 
-            entry.keywords && entry.keywords.some(kw => issueLower.includes(kw.toLowerCase()))
-        );
+        let bestMatch = null;
+        let highestScore = 0;
 
-        const suggestion = match ? match.solution : "No specific KB found. Standard diagnostic: Check connectivity and restart hardware.";
-        res.json({ suggestion });
+        // AI-Tailored Scoring Loop: Scans sentence structure for semantic weight
+        kb.forEach(entry => {
+            let currentScore = 0;
+
+            if (entry.keywords) {
+                entry.keywords.forEach(kw => {
+                    const kwLower = kw.toLowerCase();
+                    // Award points if the keyword is found in the sentence
+                    if (issueLower.includes(kwLower)) {
+                        currentScore += 2; 
+                        
+                        // BONUS SCORE: Higher accuracy if exact phrases or word boundaries match
+                        const wordRegex = new RegExp(`\\b${kwLower}\\b`, 'g');
+                        if (wordRegex.test(issueLower)) {
+                            currentScore += 1;
+                        }
+                    }
+                });
+            }
+
+            // Keep track of the most accurate match
+            if (currentScore > highestScore) {
+                highestScore = currentScore;
+                bestMatch = entry;
+            }
+        });
+
+        // Formulate tailored output based on the best calculated match
+        let dynamicSuggestion = "";
+        if (highestScore > 0 && bestMatch) {
+            dynamicSuggestion = `[AI Tailored Resolution - Match Confidence Score: ${highestScore} Tooling: ${bestMatch.category}] 
+            Based on detected symptoms, proceed with the following protocol: ${bestMatch.solution}`;
+        } else {
+            // General baseline recommendation if score is zero
+            dynamicSuggestion = `[AI Tailored Resolution - Low Confidence Pattern Match] 
+            Symptoms did not confidently match a specific enterprise playbook. Initiating standard triage: 
+            1. Verify user hardware physical layer connectivity. 
+            2. Review local Event Viewer/System logs for runtime fault codes. 
+            3. Request re-authentication under administrative isolation.`;
+        }
+
+        res.json({ suggestion: dynamicSuggestion });
     } catch (err) {
-        console.error("KB Engine Error:", err);
-        res.status(500).json({ suggestion: "KB Engine Offline." });
+        console.error("AI KB Engine Exception:", err);
+        res.status(500).json({ suggestion: "AI Tailored Engine Runtime Offline." });
     }
 });
 

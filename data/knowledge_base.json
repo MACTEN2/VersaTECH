@@ -2,14 +2,14 @@
   {
     "id": "KB-001",
     "category": "Network",
-    "issue_keyword": "drive",
-    "solution": "1. Verify VPN connection. 2. Use 'net use' command to remap drive. 3. Check Active Directory permissions."
+    "keywords": ["vpn", "globalprotect", "remote", "connection", "tunnel", "dropped"],
+    "solution": "Target the local profile. Instruct the worker to log completely out of the GlobalProtect client, flush the local DNS cache via terminal ('ipconfig /flushdns'), cycle the router power, and attempt re-authentication via the nearest regional gateway."
   },
   {
     "id": "KB-002",
     "category": "Hardware",
-    "issue_keyword": "laptop",
-    "solution": "1. Perform a hard reset (hold power for 30s). 2. Check for battery swelling. 3. Verify AC adapter voltage."
+    "keywords": ["monitor", "display", "blinking", "hdmi", "screen", "flicker", "black"],
+    "solution": "Isolate power vs interface failure. Swap out the existing HDMI/DisplayPort cable with a tested corporate fallback asset, check the monitor's refresh rate settings in the OS Display properties panel, and perform a hard reset on the docking station."
   },
   {
     "id": "KB-003",

@@ -106,5 +106,59 @@
     "steps_taken": "make sure you turn off your router and leave it off for about 3 minutes. Then ensure you hold the printer's on button and which should start blinking or hear a beep noise. That means the printer ready to pair with a device within the same connected network. ",
     "status": "Resolved",
     "resolution_code": "FIXED_PERMANENT"
+  },
+  {
+    "id": 1012,
+    "user": "Marcus Vance",
+    "issue": "Unable to connect to secure assets, connection keeps dropping on the office VPN.",
+    "priority": "Critical",
+    "category": "Network",
+    "steps_taken": "Flushed the local DNS cache, cycled the network interface card, and successfully re-authenticated the user session via the VPN client.",
+    "status": "Resolved",
+    "resolution_code": "FIXED_PERMANENT"
+  },
+  {
+    "id": 1013,
+    "user": "Marcus Vance",
+    "issue": "Unable to connect to secure assets, connection keeps dropping on the office VPN.",
+    "priority": "Critical",
+    "category": "Network"
+  },
+  {
+    "id": 1014,
+    "user": "Marcus Vance",
+    "issue": "Unable to connect to secure assets, connection keeps dropping on the office VPN.",
+    "priority": "Critical",
+    "category": "Network",
+    "steps_taken": "Flushed the local DNS cache, cycled the network interface card, and successfully re-authenticated the user session via the VPN client.",
+    "status": "Resolved",
+    "resolution_code": "FIXED_PERMANENT"
+  },
+  {
+    "id": 1015,
+    "user": "Chris Smith",
+    "issue": "<script>alert('Hacked')</script>",
+    "priority": "Low",
+    "category": "Network"
+  },
+  {
+    "id": 1016,
+    "user": "Marcus Vance",
+    "issue": "Unable to connect to secure assets, connection keeps dropping on the office VPN.",
+    "priority": "Critical",
+    "category": "Network",
+    "steps_taken": "Flushed the local DNS cache, cycled the network interface card, and successfully re-authenticated the user session via the VPN client.",
+    "status": "Resolved",
+    "resolution_code": "FIXED_PERMANENT"
+  },
+  {
+    "id": 1017,
+    "user": "Marcus Vance",
+    "issue": "Unable to connect to secure assets, connection keeps dropping on the office VPN.",
+    "priority": "Critical",
+    "category": "Network",
+    "steps_taken": "Flushed the local DNS cache, cycled the network interface card, and successfully re-authenticated the user session via the VPN client.",
+    "status": "Resolved",
+    "resolution_code": "FIXED_PERMANENT"
   }
 ]
