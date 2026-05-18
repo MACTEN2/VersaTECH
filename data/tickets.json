@@ -6,7 +6,10 @@
     "priority": "High",
     "category": "Network",
     "isVip": false,
-    "timestamp": "2026-05-14T08:30:00Z"
+    "timestamp": "2026-05-14T08:30:00Z",
+    "steps_taken": "uninstall the vpn first, turn off the wifi and don't connect back to the wifi until it has been 5 mins. ",
+    "status": "Resolved",
+    "resolution_code": "FIXED_PERMANENT"
   },
   {
     "id": 1002,
@@ -43,5 +46,15 @@
     "category": "Infrastructure",
     "isVip": false,
     "timestamp": "2026-05-14T11:45:00Z"
+  },
+  {
+    "id": 1006,
+    "user": "Jane Doe ",
+    "issue": "Low storage in RAM says its only about 4GB.",
+    "priority": "Low",
+    "category": "Hardware",
+    "steps_taken": "Either add more RAM card into the PC. Or if there is no extra slot to add more of them, replace them with a RAM with more storage. FYI, recommended to get a card that is more than 8GB.",
+    "status": "Resolved",
+    "resolution_code": "FIXED_PERMANENT"
   }
 ]

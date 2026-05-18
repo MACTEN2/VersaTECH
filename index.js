@@ -103,22 +103,28 @@ app.get('/api/tickets', (req, res) => {
     res.json(readDB());
 });
 
-// API Route: Get KB Suggestion
-app.get('/api/kb/:id', (req, res) => {
-   const getKBSuggestion = (ticketIssue) => {
+// API Route: Get KB Suggestion (FIXED SYNTAX DISCREPANCY)
+app.get('/api/kb', (req, res) => {
     try {
-        const kb = JSON.parse(fs.readFileSync('./data/knowledge_base.json', 'utf8'));
+        const ticketIssue = req.query.issue;
+        if (!ticketIssue) {
+            return res.json({ suggestion: "No issue query provided for analysis." });
+        }
+
+        const kb = JSON.parse(fs.readFileSync(KB_PATH, 'utf8'));
         const issueLower = ticketIssue.toLowerCase();
         
+        // Dynamic scan across keywords array
         const match = kb.find(entry => 
-            entry.keywords.some(kw => issueLower.includes(kw))
+            entry.keywords && entry.keywords.some(kw => issueLower.includes(kw.toLowerCase()))
         );
 
-        return match ? match.solution : "No specific KB found. Standard diagnostic: Check connectivity and restart hardware.";
+        const suggestion = match ? match.solution : "No specific KB found. Standard diagnostic: Check connectivity and restart hardware.";
+        res.json({ suggestion });
     } catch (err) {
-        return "KB Engine Offline.";
+        console.error("KB Engine Error:", err);
+        res.status(500).json({ suggestion: "KB Engine Offline." });
     }
-};
 });
 
 // API Route: Resolve Ticket
@@ -126,6 +132,39 @@ app.post('/api/resolve', (req, res) => {
     const { id, category, steps } = req.body;
     resolveTicket(id, category, steps);
     res.json({ message: "Success" });
+});
+
+// --- NEW TICKET INGESTION PROTOCOL ---
+app.post('/api/tickets', (req, res) => {
+    try {
+        const { user, issue, priority, category } = req.body;
+        
+        // 1. Read existing tickets
+        const ticketsPath = './data/tickets.json';
+        const tickets = JSON.parse(fs.readFileSync(ticketsPath, 'utf8'));
+        
+        // 2. Generate a professional unique ID (increment highest existing ID)
+        const newId = tickets.length > 0 ? Math.max(...tickets.map(t => t.id)) + 1 : 101;
+        
+        // 3. Formulate the new ticket object
+        const newTicket = {
+            id: newId,
+            user: user || "Unknown User",
+            issue: issue || "No description provided.",
+            priority: priority || "Low",
+            category: category || "General IT"
+        };
+        
+        // 4. Append and write back to flat-file database
+        tickets.push(newTicket);
+        fs.writeFileSync(ticketsPath, JSON.stringify(tickets, null, 2));
+        
+        // 5. Respond with the newly created ticket
+        res.status(201).json(newTicket);
+    } catch (err) {
+        console.error("Ingestion Error:", err);
+        res.status(500).json({ error: "Failed to log new enterprise ticket." });
+    }
 });
 
 app.listen(PORT, () => {
