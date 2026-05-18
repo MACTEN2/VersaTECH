@@ -167,6 +167,43 @@ app.post('/api/tickets', (req, res) => {
     }
 });
 
+// --- LIVE METRICS PROTOCOL ---
+// --- LIVE METRICS PROTOCOL ---
+app.get('/api/metrics', (req, res) => {
+    try {
+        const ticketsPath = './data/tickets.json';
+        let activeCount = 0;
+        let criticalCount = 0;
+
+        // Safely check and read tickets file
+        if (fs.existsSync(ticketsPath)) {
+            const tickets = JSON.parse(fs.readFileSync(ticketsPath, 'utf8'));
+            activeCount = tickets.length;
+            criticalCount = tickets.filter(t => t.priority === 'Critical').length;
+        }
+        
+        // Safely check and read stats log file
+        let resolvedCount = 0;
+        const statsPath = './docs/stats.log';
+        if (fs.existsSync(statsPath)) {
+            const logContent = fs.readFileSync(statsPath, 'utf8');
+            // Cleanly filter out empty spaces and look for the 'Resolved' keyword
+            resolvedCount = logContent.split('\n').filter(line => line.trim() && line.includes('Resolved')).length;
+        }
+
+        // Return data cleanly with status 200
+        res.status(200).json({
+            activeTickets: activeCount,
+            criticalTickets: criticalCount,
+            resolvedTickets: resolvedCount
+        });
+    } catch (err) {
+        console.error("Metrics Engine Error:", err);
+        res.status(500).json({ error: "Failed to compile system metrics safely." });
+    }
+});
+
+
 app.listen(PORT, () => {
     console.log(`🚀 IT Simulator Backend running on http://localhost:${PORT}`);
 });

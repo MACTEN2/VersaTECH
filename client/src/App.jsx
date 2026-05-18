@@ -13,11 +13,19 @@ function App() {
   // Modal & Form State Management
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newTicketUser, setNewTicketUser] = useState("");
+  const [metrics, setMetrics] = useState({ activeTickets: 0, criticalTickets: 0, resolvedTickets: 0 });
   const [newTicketIssue, setNewTicketIssue] = useState("");
   const [newTicketPriority, setNewTicketPriority] = useState("Low");
   const [newTicketCategory, setNewTicketCategory] = useState("General IT");
 
   // --- 2. EFFECT HOOKS (NETWORK DATA FLOWS) ---
+
+  const fetchMetrics = () => {
+    fetch('http://localhost:3001/api/metrics')
+      .then(res => res.json())
+      .then(data => setMetrics(data))
+      .catch(err => console.error("Metrics fetch error:", err));
+  };
 
   // Initial Sync: Load active ticket queue on startup
   useEffect(() => {
@@ -211,6 +219,40 @@ function App() {
 
         {/* TROUBLESHOOTING WORKSPACE */}
         <section className="flex-1 p-8 bg-slate-50 overflow-y-auto">
+          
+          {/* SYSTEM METRICS DASHBOARD GRID */}
+          <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">Queue Volume</p>
+                <h3 className="text-2xl font-bold text-slate-800">{metrics.activeTickets} Active</h3>
+              </div>
+              <div className="bg-blue-50 p-2.5 rounded-lg text-blue-600">
+                <Ticket size={20} />
+              </div>
+            </div>
+
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">System Urgency</p>
+                <h3 className="text-2xl font-bold text-red-600">{metrics.criticalTickets} Critical</h3>
+              </div>
+              <div className="bg-red-50 p-2.5 rounded-lg text-red-600">
+                <AlertTriangle size={20} />
+              </div>
+            </div>
+
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">Engine Throughput</p>
+                <h3 className="text-2xl font-bold text-green-600">{metrics.resolvedTickets} Fixed</h3>
+              </div>
+              <div className="bg-green-50 p-2.5 rounded-lg text-green-600">
+                <CheckCircle size={20} />
+              </div>
+            </div>
+          </div>
+
           {activeTicket ? (
             <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-300">
               <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
